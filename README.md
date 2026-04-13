@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Financial Intelligence System
 
 A multi-agent financial analysis system that provides real-time stock analysis and trading recommendations for NYSE-listed stocks. The system uses LangGraph to orchestrate a pipeline of specialized agents that perform data ingestion, technical analysis, risk assessment, and AI-powered synthesis.
@@ -209,3 +210,6 @@ The `llm_used` field in the response indicates whether AI was used or offline an
 =======
 # Financial_Intelligence_system
 >>>>>>> adcd1558683cd89cac00b11579ab839d86744ee9
+=======
+
+>>>>>>> 226aebb49cef08190f9c2bf88bd692ec8a9fb44c
