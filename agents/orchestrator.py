@@ -3,6 +3,7 @@ from agents.base_agent import BaseAgent
 from agents.market_data_agent import MarketDataAgent
 from agents.sentiment_agent import SentimentAgent
 from agents.risk_agent import RiskAgent
+from agents.market_intelligence_agent import MarketIntelligenceAgent
 from core.state_manager import StateManager
 from core.llm_manager import LLMManager
 from typing import Dict, Any
@@ -20,7 +21,8 @@ class MasterOrchestrator(BaseAgent):
         self.agents = {
             'market_data': MarketDataAgent(),
             'sentiment': SentimentAgent(),
-            'risk': RiskAgent()
+            'risk': RiskAgent(),
+            'market_intelligence': MarketIntelligenceAgent()
         }
 
     def analyze_stock(self, symbol: str, period: str = '1y', 
@@ -57,6 +59,17 @@ class MasterOrchestrator(BaseAgent):
             risk_result = self.agents['risk'].run(risk_input)
             result['agent_results']['risk'] = risk_result
             self.state_manager.save_agent_result('risk', risk_result)
+
+            # Execute Market Intelligence Agent directly for combined signal
+            mi_input = {
+                'ticker': symbol,
+                'risk_metrics': risk_result,
+                'technical_indicators': market_result.get('technical_indicators', {}),
+                'fundamental_metrics': market_result.get('company_info', {})
+            }
+            market_intelligence_result = self.agents['market_intelligence'].run(mi_input)
+            result['agent_results']['market_intelligence'] = market_intelligence_result
+            self.state_manager.save_agent_result('market_intelligence', market_intelligence_result)
 
             # Synthesize results
             result['overall_analysis'] = self._synthesize_results(result['agent_results'])
@@ -103,6 +116,16 @@ class MasterOrchestrator(BaseAgent):
         # Simple rule-based recommendation
         sentiment = agent_results.get('sentiment', {}).get('overall_sentiment', 'neutral')
         risk_level = agent_results.get('risk', {}).get('risk_level', 'Medium')
+        market_intelligence = agent_results.get('market_intelligence', {})
+
+        if market_intelligence.get('status') == 'success':
+            mi_score = market_intelligence.get('final_score')
+            if isinstance(mi_score, (int, float)):
+                if mi_score >= 65.0 and risk_level != 'High':
+                    return 'buy'
+                if mi_score <= 35.0:
+                    return 'sell'
+                return 'hold'
 
         if sentiment == 'positive' and risk_level == 'Low':
             return 'buy'

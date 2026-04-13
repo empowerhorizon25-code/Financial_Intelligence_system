@@ -2,6 +2,7 @@
 import unittest
 from agents.market_data_agent import MarketDataAgent
 from agents.sentiment_agent import SentimentAgent
+from agents.market_intelligence_agent import MarketIntelligenceAgent
 from agents.orchestrator import MasterOrchestrator
 
 class TestMarketDataAgent(unittest.TestCase):
@@ -37,11 +38,13 @@ class TestOrchestrator(unittest.TestCase):
     def test_orchestrator_initialization(self):
         self.assertIsNotNone(self.orchestrator.agents)
         self.assertIn('market_data', self.orchestrator.agents)
+        self.assertIn('market_intelligence', self.orchestrator.agents)
 
     def test_analyze_stock(self):
         result = self.orchestrator.analyze_stock('AAPL', '1mo')
         self.assertIn('symbol', result)
         self.assertIn('recommendation', result)
+        self.assertIn('market_intelligence', result['agent_results'])
 
 if __name__ == '__main__':
     unittest.main()
