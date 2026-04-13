@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Financial Intelligence System
 
 A multi-agent financial analysis system that provides real-time stock analysis and trading recommendations for NYSE-listed stocks. The system uses LangGraph to orchestrate a pipeline of specialized agents that perform data ingestion, technical analysis, risk assessment, and AI-powered synthesis.
@@ -205,3 +206,6 @@ The system uses Google Gemini AI (`gemini-2.0-flash` with fallback to `gemini-1.
 - Network connectivity issues occur
 
 The `llm_used` field in the response indicates whether AI was used or offline analytics were applied.
+=======
+# Financial_Intelligence_system
+>>>>>>> adcd1558683cd89cac00b11579ab839d86744ee9
