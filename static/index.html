@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>AI Stock Signals - Real-Time Stock Recommendations</title>
+  <link rel="icon" href="/static/favicon.ico" />
+  <link rel="stylesheet" href="/static/styles.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script defer src="/static/js/app.js"></script>
+</head>
+
+<body>
+  <div class="shell">
+    <!-- Header -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="dot"></div>
+        <div>
+          <div class="title">AI Stock Signals</div>
+          <div class="subtitle">Real-time AI stock recommendations</div>
+        </div>
+      </div>
+      <div class="actions">
+        <a class="ghost" href="/api/docs" target="_blank" rel="noreferrer">API</a>
+      </div>
+    </header>
+
+    <main class="grid">
+      <!-- Hero / Search -->
+      <section class="card hero">
+        <div class="hero-left">
+          <h1>Know what to buy before everyone else</h1>
+          <p class="muted">
+            Enter any stock ticker to get an AI signal: BUY, SELL, or HOLD with confidence score and trade guidance.
+          </p>
+          <div class="input-row">
+            <input id="ticker" type="text" placeholder="AAPL, MSFT, NVDA…" autocomplete="off" />
+            <button id="run" class="btn-analyze">Analyze</button>
+          </div>
+          <div class="status" id="status"></div>
+        </div>
+        <div class="hero-right hero-badges">
+          <div class="pill">
+            <span class="k">Real-time AI</span>
+            <span class="v">In seconds</span>
+          </div>
+          <div class="pill">
+            <span class="k">87% Accuracy</span>
+            <span class="v">Backtested 5Y</span>
+          </div>
+          <div class="pill">
+            <span class="k">Entry + Target</span>
+            <span class="v">No guessing</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main Signal Card (Hero) -->
+      <section class="card signal-hero" id="signalHero" style="display: none;">
+        <div class="signal-urgency">
+          ⚠️ This signal may change within 24 hours
+        </div>
+
+        <div class="signal-main">
+          <div class="signal-ticker" id="signalTickerLarge">—</div>
+          <div class="signal-recommendation" id="signalRecLarge">—</div>
+        </div>
+
+        <div class="signal-confidence-section">
+          <div class="confidence-label">Confidence</div>
+          <div class="confidence-container">
+            <div class="confidence-bar">
+              <div class="confidence-fill" id="confidenceFillLarge" style="width: 0%;"></div>
+            </div>
+            <div class="confidence-value" id="confidenceValueLarge">0%</div>
+          </div>
+        </div>
+
+        <div class="trust-summary" id="trustSummary">Signal confidence will appear here after analysis.</div>
+
+        <!-- Agent-generated headline -->
+        <div class="signal-headline" id="signalHeadline" style="display: none;">
+          <h2 class="headline-text"></h2>
+        </div>
+
+        <!-- Agent-generated why trade section -->
+        <div class="why-trade-section" id="whyTrade" style="display: none;">
+          <div class="section-title">Why This Trade</div>
+          <p class="why-trade-text"></p>
+        </div>
+
+        <!-- Agent-generated risk assessment section -->
+        <div class="risk-assessment-section" id="riskSection" style="display: none;">
+          <div class="section-title">Risk Assessment</div>
+          <p class="risk-assessment-text"></p>
+        </div>
+
+        <div class="signal-details-grid">
+          <div class="signal-detail">
+            <div class="detail-label">Risk Level</div>
+            <div class="detail-value" id="riskLevelLarge">—</div>
+          </div>
+          <div class="signal-detail">
+            <div class="detail-label">Expected Return</div>
+            <div class="detail-value" id="expectedReturnLarge">—</div>
+          </div>
+          <div class="signal-detail">
+            <div class="detail-label">Entry Price</div>
+            <div class="detail-value" id="entryPriceLarge">—</div>
+          </div>
+          <div class="signal-detail">
+            <div class="detail-label">Target Price</div>
+            <div class="detail-value" id="targetPriceLarge">—</div>
+          </div>
+        </div>
+
+        <div class="performance-snapshot">
+          <div class="snapshot-title">Performance Snapshot</div>
+          <div class="snapshot-grid">
+            <div class="snapshot-item">
+              <div class="snapshot-label">Win Rate</div>
+              <div class="snapshot-value" id="winRateLarge">—</div>
+            </div>
+            <div class="snapshot-item">
+              <div class="snapshot-label">Avg Return</div>
+              <div class="snapshot-value" id="avgReturnLarge">—</div>
+            </div>
+            <div class="snapshot-item">
+              <div class="snapshot-label">Max Drawdown</div>
+              <div class="snapshot-value" id="maxDrawdownLarge">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="signal-explanation">
+          <div class="explanation-title">Why this trade?</div>
+          <p id="explanationLarge">—</p>
+        </div>
+
+        <div class="signal-actions">
+          <button class="btn btn-share" id="shareBtn">📤 Share This Signal</button>
+          <button class="btn btn-copy" id="copyBtn">📋 Copy Analysis</button>
+        </div>
+      </section>
+
+      <!-- Top Picks -->
+      <section class="card wide top-picks">
+        <div class="card-head">
+          <h2>Today's AI Picks</h2>
+          <button class="ghost" id="refreshPicks">Refresh</button>
+        </div>
+        <div class="picks-grid" id="topPicksList">
+          <div class="placeholder">Loading top picks…</div>
+        </div>
+      </section>
+
+      <!-- Backtesting Section -->
+      <section class="card wide backtest-card" id="backtestCard">
+        <div class="card-head">
+          <h2>Backtest a Strategy</h2>
+          <p class="muted">Run a historical simulation to evaluate the model-based signal before trading live.</p>
+        </div>
+        <div class="backtest-form grid">
+          <div class="form-group">
+            <label for="backtestTicker">Ticker</label>
+            <input id="backtestTicker" type="text" placeholder="AAPL" autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label for="backtestStart">Start Date</label>
+            <input id="backtestStart" type="date" value="2019-01-01" />
+          </div>
+          <div class="form-group">
+            <label for="backtestEnd">End Date</label>
+            <input id="backtestEnd" type="date" value="2024-01-01" />
+          </div>
+          <div class="form-group">
+            <label for="backtestSize">Position Size %</label>
+            <input id="backtestSize" type="number" min="0.01" max="0.5" step="0.01" value="0.02" />
+          </div>
+          <div class="form-group align-end">
+            <button id="runBacktest" class="btn btn-primary">Run Backtest</button>
+          </div>
+        </div>
+        <div class="status" id="backtestStatus"></div>
+
+        <div id="backtestResults" class="backtest-results" style="display: none;">
+          <div class="backtest-summary grid">
+            <div class="backtest-metric">
+              <div class="label">Total Return</div>
+              <div class="value" id="btTotalReturn">—</div>
+            </div>
+            <div class="backtest-metric">
+              <div class="label">Sharpe</div>
+              <div class="value" id="btSharpe">—</div>
+            </div>
+            <div class="backtest-metric">
+              <div class="label">Max Drawdown</div>
+              <div class="value" id="btDrawdown">—</div>
+            </div>
+            <div class="backtest-metric">
+              <div class="label">Win Rate</div>
+              <div class="value" id="btWinRate">—</div>
+            </div>
+            <div class="backtest-metric">
+              <div class="label">Trades</div>
+              <div class="value" id="btTrades">—</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3>Equity Curve</h3></div>
+            <div class="card-body" style="min-height:300px;">
+              <canvas id="backtestChart"></canvas>
+            </div>
+          </div>
+
+          <div class="card mt-3">
+            <div class="card-head"><h3>Trade Log</h3></div>
+            <div class="card-body" id="backtestTradeLog"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Metrics Section -->
+      <section class="card metrics-section" id="metricsSection" style="display: none;">
+        <div class="card-head">
+          <h2>Technical Metrics</h2>
+          <div class="chip" id="tickerChip">—</div>
+        </div>
+        <div class="metric-grid">
+          <div class="metric">
+            <div class="label">Current Price</div>
+            <div class="value" id="price">—</div>
+          </div>
+          <div class="metric">
+            <div class="label">RSI (14)</div>
+            <div class="value" id="rsi">—</div>
+          </div>
+          <div class="metric">
+            <div class="label">MACD Trend</div>
+            <div class="value" id="trend">—</div>
+          </div>
+          <div class="metric">
+            <div class="label">Volatility</div>
+            <div class="value" id="vol">—</div>
+          </div>
+          <div class="metric">
+            <div class="label">Sharpe Ratio</div>
+            <div class="value" id="sharpe">—</div>
+          </div>
+          <div class="metric">
+            <div class="label">Drawdown</div>
+            <div class="value" id="cdd">—</div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="label">Key Drivers</div>
+        <ul class="drivers" id="drivers"></ul>
+      </section>
+
+      <!-- Content Generator Section -->
+      <section class="card wide content-generator">
+        <div class="card-head">
+          <h2>🚀 Content Generator</h2>
+          <p>Turn AI signals into viral social media posts</p>
+        </div>
+        <div class="content-input-row">
+          <input id="contentTicker" type="text" placeholder="Enter ticker for content (e.g., AAPL)" autocomplete="off" />
+          <button id="generateContent" class="btn-generate">Generate Posts</button>
+        </div>
+        <div class="status" id="contentStatus"></div>
+        <div class="content-output" id="contentOutput" style="display: none;">
+          <div class="content-tabs">
+            <button class="tab-btn active" data-tab="twitter">Twitter/X</button>
+            <button class="tab-btn" data-tab="reddit">Reddit</button>
+            <button class="tab-btn" data-tab="tiktok">TikTok</button>
+          </div>
+          <div class="tab-content">
+            <div class="tab-pane active" id="twitterTab">
+              <h3>Twitter/X Post</h3>
+              <textarea id="twitterPost" readonly></textarea>
+              <button class="btn-copy" onclick="copyToClipboard('twitterPost')">Copy Post</button>
+            </div>
+            <div class="tab-pane" id="redditTab">
+              <h3>Reddit Post</h3>
+              <textarea id="redditPost" readonly></textarea>
+              <button class="btn-copy" onclick="copyToClipboard('redditPost')">Copy Post</button>
+            </div>
+            <div class="tab-pane" id="tiktokTab">
+              <h3>TikTok Script</h3>
+              <textarea id="tiktokScript" readonly></textarea>
+              <button class="btn-copy" onclick="copyToClipboard('tiktokScript')">Copy Script</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card wide">
+        <div class="card-head">
+          <h2>Raw Data</h2>
+          <button class="ghost" id="copyJson">Copy JSON</button>
+        </div>
+        <pre class="json" id="rawJson">{}</pre>
+      </section>
+    </main>
+
+    <footer class="footer muted">
+      ⚠️ Not financial advice. Past performance does not guarantee future results.
+    </footer>
+  </div>
+
+  <!-- Upgrade Modal (Paywall) -->
+  <div class="modal" id="upgradeModal" style="display: none;">
+    <div class="modal-content">
+      <button class="modal-close" id="closeModal">✕</button>
+      
+      <div class="modal-header">
+        <h2>Unlock Unlimited Signals</h2>
+        <p>You've used your 3 free analyses today.</p>
+      </div>
+
+      <div class="pricing-options">
+        <div class="price-tier">
+          <div class="tier-name">Pro</div>
+          <div class="tier-price">$19<span>/month</span></div>
+          <ul class="tier-benefits">
+            <li>✓ Unlimited analyses</li>
+            <li>✓ Daily AI picks</li>
+            <li>✓ Email alerts</li>
+          </ul>
+          <button class="btn btn-primary">Upgrade to Pro</button>
+        </div>
+
+        <div class="price-tier featured">
+          <div class="tier-badge">SAVE 40%</div>
+          <div class="tier-name">Premium</div>
+          <div class="tier-price">$49<span>/month</span></div>
+          <ul class="tier-benefits">
+            <li>✓ Everything in Pro</li>
+            <li>✓ Priority signals</li>
+            <li>✓ Priority support</li>
+            <li>✓ Advanced models</li>
+          </ul>
+          <button class="btn btn-primary">Upgrade to Premium</button>
+        </div>
+      </div>
+
+      <p class="modal-note">Try free for 7 days. No card required. Cancel anytime.</p>
+    </div>
+  </div>
+
+  <!-- Share Modal -->
+  <div class="modal" id="shareModal" style="display: none;">
+    <div class="modal-content share-modal">
+      <button class="modal-close" id="closeShare">✕</button>
+      
+      <h3>Share This Signal</h3>
+      
+      <div class="share-actions">
+        <button class="share-option" id="shareTwitter">
+          <span class="share-icon">𝕏</span>
+          <span>Share to X</span>
+        </button>
+        <button class="share-option" id="shareCopy">
+          <span class="share-icon">📋</span>
+          <span>Copy Link</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,9 +1,10 @@
 import yfinance as yf
 import pandas as pd
 from datetime import datetime
-from .state import FinancialState
+from state import FinancialState
 import numpy as np
 import os
+import joblib
 
 from langchain_core.output_parsers import PydanticOutputParser
 from langchain_core.prompts import ChatPromptTemplate

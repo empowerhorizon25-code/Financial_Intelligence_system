@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from .fis_api import app as api_app
+from fis_api import app as api_app
 
 app = FastAPI(title="Financial Intelligence System UI")
 

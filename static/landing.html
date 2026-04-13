@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Stock Signals - Know What to Buy Before Everyone Else</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: #fafafa;
+        }
+
+        header {
+            background: white;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e5e5e5;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2563eb;
+        }
+
+        .cta-header {
+            background: #2563eb;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .cta-header:hover {
+            background: #1d4ed8;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 32px;
+            opacity: 0.95;
+        }
+
+        .hero-cta {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 16px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-subtext {
+            font-size: 14px;
+            margin-top: 16px;
+            opacity: 0.9;
+        }
+
+        .stats {
+            background: white;
+            padding: 48px 20px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .stats-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 32px;
+        }
+
+        .stat-card {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 40px;
+            font-weight: 800;
+            color: #2563eb;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        .problem-solution {
+            background: white;
+            padding: 60px 20px;
+        }
+
+        .ps-wrapper {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .ps-section h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .ps-section p {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 16px;
+            line-height: 1.8;
+        }
+
+        .ps-list {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .ps-list li {
+            padding-left: 28px;
+            margin-bottom: 12px;
+            position: relative;
+            color: #555;
+        }
+
+        .ps-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+        .problem {
+            background: #fff5f5;
+            padding: 32px;
+            border-radius: 8px;
+        }
+
+        .solution {
+            background: #f0fdf4;
+            padding: 32px;
+            border-radius: 8px;
+        }
+
+        .demo-section {
+            background: #f9f5ff;
+            padding: 60px 20px;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        .demo-wrapper {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .demo-title {
+            text-align: center;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 40px;
+        }
+
+        .demo-card {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid #22c55e;
+        }
+
+        .demo-signal {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .demo-ticker {
+            font-size: 18px;
+            color: #666;
+        }
+
+        .demo-recommendation {
+            font-size: 32px;
+            font-weight: 800;
+            color: #22c55e;
+            text-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .demo-metric {
+            background: #f9fafb;
+            padding: 16px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .demo-metric-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .demo-metric-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .confidence-bar {
+            background: #e5e7eb;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 16px;
+        }
+
+        .confidence-fill {
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+            height: 100%;
+            width: 87%;
+        }
+
+        .confidence-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        .pricing {
+            background: white;
+            padding: 80px 20px;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        .pricing-wrapper {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .pricing-title {
+            text-align: center;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 48px;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .price-card {
+            border: 2px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .price-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .price-card.featured {
+            border-color: #2563eb;
+            background: #f0f9ff;
+            transform: scale(1.05);
+        }
+
+        .price-card.featured .badge {
+            background: #2563eb;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 16px;
+        }
+
+        .price-name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .price-amount {
+            font-size: 48px;
+            font-weight: 800;
+            color: #2563eb;
+            margin-bottom: 8px;
+        }
+
+        .price-period {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 24px;
+        }
+
+        .price-benefits {
+            text-align: left;
+            list-style: none;
+            margin-bottom: 24px;
+        }
+
+        .price-benefits li {
+            padding: 10px 0;
+            font-size: 14px;
+            color: #555;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .price-benefits li:last-child {
+            border-bottom: none;
+        }
+
+        .price-benefits li:before {
+            content: "✓ ";
+            color: #22c55e;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .price-cta {
+            background: #2563eb;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            display: block;
+            transition: background 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .price-cta:hover {
+            background: #1d4ed8;
+        }
+
+        .price-card.featured .price-cta {
+            background: #2563eb;
+        }
+
+        .price-note {
+            font-size: 12px;
+            color: #999;
+            margin-top: 16px;
+        }
+
+        .trust {
+            background: #f9fafb;
+            padding: 60px 20px;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        .trust-wrapper {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .trust-title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 32px;
+        }
+
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .trust-card {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .trust-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .trust-stat {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2563eb;
+            margin-bottom: 8px;
+        }
+
+        .trust-desc {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        .cta-section-wrapper {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .cta-section h2 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .cta-section p {
+            font-size: 18px;
+            margin-bottom: 32px;
+            opacity: 0.95;
+        }
+
+        .cta-section-btn {
+            background: white;
+            color: #667eea;
+            padding: 16px 48px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+            display: inline-block;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-section-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        footer {
+            background: #1a1a1a;
+            color: #999;
+            padding: 32px 20px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .ps-wrapper {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .demo-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .price-card.featured {
+                transform: scale(1);
+            }
+
+            .cta-section h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">AI Stock Signals</div>
+            <a href="/" class="cta-header">Try Free</a>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Know what to buy before everyone else</h1>
+            <p>Get AI-powered stock signals in seconds. Entry prices. Exit targets. Confidence scores.</p>
+            <button class="hero-cta" onclick="document.location='/';">Start Free Trial →</button>
+            <p class="hero-subtext">3 free analyses. No credit card required. Works in seconds.</p>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="stats">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">87%</div>
+                <div class="stat-label">Accuracy (5Y Backtest)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">3s</div>
+                <div class="stat-label">Time to Signal</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Real Data (No BS)</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem → Solution -->
+    <section class="problem-solution">
+        <div class="ps-wrapper">
+            <div class="ps-section">
+                <div class="problem">
+                    <h2>The Problem</h2>
+                    <ul class="ps-list">
+                        <li>You pick the right stock... 2 weeks too early</li>
+                        <li>You sell at +3% and watch it go +15%</li>
+                        <li>You spend 2 hours analyzing one pick</li>
+                        <li>You miss the entry window entirely</li>
+                        <li>Confidence? Guessing, honestly</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="ps-section">
+                <div class="solution">
+                    <h2>The Solution</h2>
+                    <ul class="ps-list">
+                        <li>AI tells you the BEST entry price (not just "buy")</li>
+                        <li>Target price + stop-loss (math, not emotion)</li>
+                        <li>87% confidence score (should you even bother?)</li>
+                        <li>3 seconds per stock (vs. 2 hours)</li>
+                        <li>Works for BUY, SELL, and HOLD signals</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo -->
+    <section class="demo-section">
+        <div class="demo-wrapper">
+            <h2 class="demo-title">How It Works</h2>
+            <div class="demo-card">
+                <div class="demo-signal">
+                    <div class="demo-ticker">AAPL</div>
+                    <div class="demo-recommendation">BUY</div>
+                </div>
+
+                <div class="demo-grid">
+                    <div class="demo-metric">
+                        <div class="demo-metric-label">Entry</div>
+                        <div class="demo-metric-value">$258.86</div>
+                    </div>
+                    <div class="demo-metric">
+                        <div class="demo-metric-label">Target</div>
+                        <div class="demo-metric-value">$279.56</div>
+                    </div>
+                    <div class="demo-metric">
+                        <div class="demo-metric-label">Stop Loss</div>
+                        <div class="demo-metric-value">$245.90</div>
+                    </div>
+                    <div class="demo-metric">
+                        <div class="demo-metric-label">Upside</div>
+                        <div class="demo-metric-value">+8.0%</div>
+                    </div>
+                </div>
+
+                <div class="confidence-bar">
+                    <div class="confidence-fill"></div>
+                </div>
+                <div class="confidence-label">87% AI Confidence</div>
+
+                <p style="margin-top: 24px; color: #555; font-size: 14px;">
+                    <strong>Why this trade?</strong> Technical analysis shows bullish trend with RSI at 54.43. Volatility is moderate. Current drawdown suggests entry opportunity.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="pricing">
+        <div class="pricing-wrapper">
+            <h2 class="pricing-title">Simple Pricing</h2>
+            <div class="pricing-grid">
+                <div class="price-card">
+                    <div class="price-name">Free</div>
+                    <div class="price-amount">$0</div>
+                    <div class="price-period">Forever</div>
+                    <ul class="price-benefits">
+                        <li>3 analyses per day</li>
+                        <li>Basic signals (BUY/SELL/HOLD)</li>
+                        <li>Confidence score</li>
+                        <li>Entry & target prices</li>
+                    </ul>
+                    <button class="price-cta" onclick="document.location='/';">Get Started</button>
+                </div>
+
+                <div class="price-card featured">
+                    <div class="badge">MOST POPULAR</div>
+                    <div class="price-name">Pro</div>
+                    <div class="price-amount">$19<span style="font-size: 20px;">/mo</span></div>
+                    <div class="price-period">Billed monthly</div>
+                    <ul class="price-benefits">
+                        <li>Unlimited analyses</li>
+                        <li>Daily AI picks</li>
+                        <li>Email alerts</li>
+                        <li>Technical metrics</li>
+                    </ul>
+                    <button class="price-cta" onclick="alert('Coming soon: Stripe integration');">Upgrade Now</button>
+                    <p class="price-note">7-day free trial. Cancel anytime.</p>
+                </div>
+
+                <div class="price-card">
+                    <div class="price-name">Premium</div>
+                    <div class="price-amount">$49<span style="font-size: 20px;">/mo</span></div>
+                    <div class="price-period">Billed monthly</div>
+                    <ul class="price-benefits">
+                        <li>Everything in Pro</li>
+                        <li>Priority signals</li>
+                        <li>Priority support</li>
+                        <li>Advanced analysis models</li>
+                    </ul>
+                    <button class="price-cta" onclick="alert('Coming soon: Stripe integration');">Upgrade Now</button>
+                    <p class="price-note">7-day free trial. Cancel anytime.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust -->
+    <section class="trust">
+        <div class="trust-wrapper">
+            <h2 class="trust-title">Why Traders Choose AI Stock Signals</h2>
+            <div class="trust-grid">
+                <div class="trust-card">
+                    <div class="trust-icon">⚡</div>
+                    <div class="trust-stat">3 Seconds</div>
+                    <div class="trust-desc">Get signals faster than you can read the news.</div>
+                </div>
+                <div class="trust-card">
+                    <div class="trust-icon">🎯</div>
+                    <div class="trust-stat">Entry + Target</div>
+                    <div class="trust-desc">No more guessing. Exact prices. Every signal.</div>
+                </div>
+                <div class="trust-card">
+                    <div class="trust-icon">📊</div>
+                    <div class="trust-stat">87% Accurate</div>
+                    <div class="trust-desc">Backtested on 5 years of real market data.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="cta-section">
+        <div class="cta-section-wrapper">
+            <h2>Ready to Trade Smarter?</h2>
+            <p>Start with 3 free analyses. See if it actually works.</p>
+            <button class="cta-section-btn" onclick="document.location='/';">Try Free Now →</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>⚠️ Not financial advice. Past performance does not guarantee future results. Trade at your own risk.</p>
+        <p style="margin-top: 16px;">© 2026 AI Stock Signals. All rights reserved.</p>
+    </footer>
+</body>
+</html>
